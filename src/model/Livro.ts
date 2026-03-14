@@ -321,7 +321,7 @@ class Livro {
                     livro.getQuantDisponivel(),
                     livro.getValorAquisicao(),
                     livro.getStatusLivroEmprestado().toUpperCase(),
-                    livro.id_livro
+                    livro.getIdLivro()
                 ];
 
                 const respostaBD = await database.query(queryAtualizarLivro, valores);

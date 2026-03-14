@@ -56,7 +56,7 @@ class LivroController extends Livro {
 
     static async remover(req: Request, res: Response): Promise<Response> {
         try {
-            const idLivro = parseInt(req.params.id_livro as string);
+            const idLivro = parseInt(req.params.id as string);
 
             const result = await Livro.removerLivro(idLivro);
 
@@ -73,7 +73,7 @@ class LivroController extends Livro {
 
     static async atualizar(req: Request, res: Response): Promise<Response> {
         try {
-            const idLivro = parseInt(req.params.id_livro as string);
+            const idLivro = parseInt(req.params.id as string);
 
             const dadosRecebidos: LivroDTO = req.body;
 
