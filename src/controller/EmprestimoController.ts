@@ -39,6 +39,35 @@ class EmprestimoController extends Emprestimo {
             res.status(500).json("Erro ao recuperar as informações do aluno.");  // Retorna mensagem de erro com status code 400
         }
     }
+
+    /**
+     * Cadastra um novo empréstimo.
+     * Recebe os dados do empréstimo a partir da requisição e passa para o serviço.
+     */
+    static async cadastrar(req: Request, res: Response): Promise<Response> {
+        try {
+            const dadosRecebidos: EmprestimoDTO = req.body;
+
+            // Chama o serviço para cadastrar o empréstimo
+            const result = await Emprestimo.cadastrarEmprestimo(
+                dadosRecebidos.aluno.id_aluno,
+                dadosRecebidos.livro.id_livro,
+                new Date(dadosRecebidos.data_emprestimo),
+                dadosRecebidos.data_devolucao ? new Date(dadosRecebidos.data_devolucao) : new Date(),
+                dadosRecebidos.status_emprestimo ?? ""
+            );
+
+            if (result) {
+                // Retorna a resposta de sucesso com o ID do novo empréstimo
+                return res.status(201).json({ mensagem: 'Empréstimo cadastrado com sucesso.'});
+            } else {
+                return res.status(500).json({ mensagem: 'Não foi possível cadastrar o livro no banco de dados.' });
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar empréstimo:', error);
+            return res.status(500).json({ mensagem: 'Erro ao cadastrar o empréstimo.' });
+        }
+    }
 }
 
 export default EmprestimoController;
