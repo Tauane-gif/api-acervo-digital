@@ -1,0 +1,31 @@
+GET http://localhost:3333/api/emprestimos
+
+###
+GET http://localhost:3333/api/emprestimos/30
+
+###
+POST http://localhost:3333/api/emprestimos
+Content-Type: application/json
+
+{
+    "data_emprestimo": "2025-03-14",
+    "data_devolucao": "2025-03-21",
+    "status_emprestimo": "Em andamento",
+    "aluno": { "id_aluno": 5 },
+    "livro": { "id_livro": 12 }
+}
+
+###
+PUT http://localhost:3333/api/emprestimos/30
+Content-Type: application/json
+
+{
+    "data_emprestimo": "2025-03-14",
+    "data_devolucao": "2025-03-28",
+    "status_emprestimo": "Em andamento",
+    "aluno": { "id_aluno": 5 },
+    "livro": { "id_livro": 12 }
+}
+
+###
+DELETE http://localhost:3333/api/emprestimos/30

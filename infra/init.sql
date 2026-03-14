@@ -76,37 +76,6 @@ CREATE TABLE IF NOT EXISTS Emprestimo (
     status_emprestimo VARCHAR (20)
 );
 
--- CREATE USUARIOS
-CREATE TABLE IF NOT EXISTS Usuario (
-    id_usuario SERIAL PRIMARY KEY,
-    uuid UUID DEFAULT gen_random_uuid() NOT NULL,
-    nome VARCHAR(70) NOT NULL,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(50) UNIQUE NOT NULL,
-    senha VARCHAR(50) NOT NULL,
-    imagem_perfil VARCHAR(100)
-);
-
--- Criar a função gerar_senha_padrao apenas se não existir
-CREATE OR REPLACE FUNCTION gerar_senha_padrao()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.senha := NEW.username;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Criar a trigger trigger_gerar_senha apenas se não existir
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_gerar_senha') THEN
-        CREATE TRIGGER trigger_gerar_senha
-        BEFORE INSERT ON Usuario
-        FOR EACH ROW
-        EXECUTE FUNCTION gerar_senha_padrao();
-    END IF;
-END $$;
-
 -- Criar as colunas na tabela Aluno, Emprestimo e Livro, se ainda não existirem
 ALTER TABLE IF EXISTS Aluno ADD COLUMN IF NOT EXISTS status_aluno BOOLEAN DEFAULT TRUE;
 ALTER TABLE IF EXISTS Emprestimo ADD COLUMN IF NOT EXISTS status_emprestimo_registro BOOLEAN DEFAULT TRUE;
@@ -160,13 +129,6 @@ VALUES
 (2, 3, '2024-09-11', '2024-09-25', 'Em andamento'),
 (4, 5, '2024-09-11', '2024-09-25', 'Em andamento'),
 (6, 2, '2024-09-11', '2024-09-25', 'Em andamento');
-
--- Inserindo usuarios
-INSERT INTO usuario (nome, username, email) 
-VALUES
-('João Silva', 'joao.silva', 'joao.silva@email.com'),
-('Maria Oliveira', 'maria.oliveira', 'maria.oliveira@email.com'),
-('Carlos Souza', 'carlos.souza', 'carlos.souza@email.com');
 
 -- Aluno
 INSERT INTO Aluno (nome, sobrenome, data_nascimento, endereco, email, celular) 

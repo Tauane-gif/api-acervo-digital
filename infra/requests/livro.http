@@ -1,0 +1,37 @@
+GET http://localhost:3333/api/livros
+
+###
+GET http://localhost:3333/api/livros/21
+
+###
+POST http://localhost:3333/api/livros
+Content-Type: application/json
+
+{
+    "titulo": "O Senhor dos Anéis: O Retorno do Rei",
+    "autor": "J.R.R. Tolkien",
+    "editora": "HarperCollins",
+    "ano_publicacao": "1954",
+    "isbn": "978-0007525599",
+    "quant_total": 10,
+    "quant_disponivel": 10,
+    "valor_aquisicao": "150.00"
+}
+
+###
+PUT http://localhost:3333/api/livros/21
+Content-Type: application/json
+
+{
+    "titulo": "O Senhor dos Anéis: As Duas Torres",
+    "autor": "J.R.R. Tolkien",
+    "editora": "HarperCollins",
+    "ano_publicacao": "1954",
+    "isbn": "978-0007525599",
+    "quant_total": 10,
+    "quant_disponivel": 10,
+    "valor_aquisicao": "150.00"
+}
+
+###
+DELETE http://localhost:3333/api/livros/21
