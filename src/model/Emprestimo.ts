@@ -200,6 +200,54 @@ class Emprestimo {
         }
     }
 
+    /**
+     * Cadastra um novo empréstimo no banco de dados
+     * 
+     * @param id_aluno : number
+     * @param id_livro : number
+     * @param data_emprestimo : Date
+     * @param data_devolucao : Date
+     * @param status_emprestimo : string
+     * @returns Promise com o resultado da inserção ou erro
+     */
+    static async cadastrarEmprestimo(
+        id_aluno: number,
+        id_livro: number,
+        data_emprestimo: Date,
+        data_devolucao: Date,
+        status_emprestimo: string
+    ): Promise<boolean> {
+        try {
+            // Cria a consulta (query) para inserir um empréstimo na tabela retornando o ID do empréstimo criado
+            const queryInsertEmprestimo = `
+                INSERT INTO Emprestimo (id_aluno, id_livro, data_emprestimo, data_devolucao, status_emprestimo)
+                VALUES ($1, $2, $3, $4, $5) RETURNING id_emprestimo;
+            `;
+
+            // estrutura os valores recebidos pela função em uma lista (array)
+            const valores = [id_aluno, id_livro, data_emprestimo, data_devolucao, status_emprestimo];
+            // realizada a consulta no banco de dados e armazena o resultado
+            const resultado = await database.query(queryInsertEmprestimo, valores);
+
+            // verifica se a quantidade de linhas alteradas é diferente de 0
+            if (resultado.rowCount != 0) {
+                // exibe mensagem de sucesso no console
+                console.log(`Empréstimo cadastrado com sucesso! ID: ${resultado.rows[0].id_emprestimo}`);
+                // retorna o ID do empréstimo
+                return true;
+            }
+
+            // retorna falso
+            return false;
+
+            // captura qualquer tipo de erro que possa acontecer
+        } catch (error) {
+            // exibe o detalhe do erro no console
+            console.error(`Erro ao cadastrar empréstimo: ${error}`);
+          
+            return false;
+        }
+    }
 }
 
 export default Emprestimo;
