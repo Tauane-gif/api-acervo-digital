@@ -217,44 +217,33 @@ class Aluno {
      */
     // Recebe o ID do aluno como parâmetro e retorna um AlunoDTO ou null
     static async listarAluno(id_aluno: number): Promise<AlunoDTO | null> {
-        try {
-            // Bloco try: aqui tentamos executar o código que pode gerar um erro.
-            // Se ocorrer algum erro dentro deste bloco, ele será capturado pelo catch.
+    try {
+        const querySelectAluno = `SELECT * FROM aluno WHERE id_aluno = $1`;
+        const respostaBD = await database.query(querySelectAluno, [id_aluno]);
 
-            // Define a query SQL — o "$1" é um parâmetro que será substituído pelo valor real (id_aluno)
-            // Isso é chamado de "prepared statement" e protege contra ataques de SQL Injection
-            const querySelectAluno = `SELECT * FROM aluno WHERE id_aluno = $1`;
-
-            // Executa a query passando o id_aluno como segundo argumento (substitui o $1)
-            const respostaBD = await database.query(querySelectAluno, [id_aluno]);
-
-            // Monta o objeto AlunoDTO com o primeiro resultado retornado (rows[0] = primeira linha)
-            const alunoDTO: AlunoDTO = {
-                id_aluno: respostaBD.rows[0].id_aluno,               // ID do aluno
-                nome: respostaBD.rows[0].nome,                       // Nome do aluno
-                sobrenome: respostaBD.rows[0].sobrenome,             // Sobrenome do aluno
-                data_nascimento: respostaBD.rows[0].data_nascimento, // Data de nascimento do aluno
-                endereco: respostaBD.rows[0].endereco,               // Endereço do aluno
-                email: respostaBD.rows[0].email,                     // E-mail do aluno
-                celular: respostaBD.rows[0].celular,                 // Celular do aluno
-                ra: respostaBD.rows[0].ra,                           // Registro Acadêmico
-                status_aluno: respostaBD.rows[0].status_aluno        // Status ativo/inativo
-            };
-
-            // Retorna o objeto aluno preenchido com os dados do banco
-            return alunoDTO;
-        } catch (error) {
-            // Bloco catch: se algum erro ocorrer no bloco try, ele será capturado aqui.
-            // Isso evita que o erro interrompa a execução do programa.
-
-            // Exibe uma mensagem de erro no console para facilitar o debug
-            console.log(`Erro ao realizar a consulta: ${error}`);
-
-            // Retorna null para indicar que não foi possível buscar o aluno
+        // ✅ Verifica se retornou alguma linha antes de acessar rows[0]
+        if (respostaBD.rows.length === 0) {
             return null;
         }
-    }
 
+        const alunoDTO: AlunoDTO = {
+            id_aluno: respostaBD.rows[0].id_aluno,
+            nome: respostaBD.rows[0].nome,
+            sobrenome: respostaBD.rows[0].sobrenome,
+            data_nascimento: respostaBD.rows[0].data_nascimento,
+            endereco: respostaBD.rows[0].endereco,
+            email: respostaBD.rows[0].email,
+            celular: respostaBD.rows[0].celular,
+            ra: respostaBD.rows[0].ra,
+            status_aluno: respostaBD.rows[0].status_aluno
+        };
+
+        return alunoDTO;
+    } catch (error) {
+        console.log(`Erro ao realizar a consulta: ${error}`);
+        return null;
+    }
+}
     /**
     * Cadastra um novo aluno no banco de dados
     * @param aluno Objeto Aluno contendo as informações a serem cadastradas
@@ -346,50 +335,44 @@ class Aluno {
     * @returns true caso sucesso, false caso erro
     */
     // Recebe um objeto Aluno com os dados atualizados e os salva no banco
-    static async atualizarAluno(aluno: Aluno): Promise<boolean> {
-        try {
-            // Antes de atualizar, verifica se o aluno existe e está ativo no banco
-            const alunoConsulta: AlunoDTO | null = await this.listarAluno(aluno.id_aluno);
+  static async atualizarAluno(aluno: Aluno): Promise<boolean> {
+    try {
+        // ✅ Usando o getter getIdAluno() em vez de acessar o atributo privado diretamente
+        const alunoConsulta: AlunoDTO | null = await this.listarAluno(aluno.getIdAluno());
 
-            // Só prossegue com a atualização se o aluno existir e estiver ativo
-            if (alunoConsulta && alunoConsulta.status_aluno) {
-                // Query SQL de atualização — cada campo recebe um placeholder "$n"
-                // O WHERE garante que só o aluno com o ID correto seja atualizado
-                const queryAtualizarAluno = `UPDATE Aluno SET 
-                                                    nome = '$1', 
-                                                    sobrenome = '$2',
-                                                    data_nascimento = '$3', 
-                                                    endereco = '$4',
-                                                    celular = '$5', 
-                                                    email = '$6'                                            
-                                                WHERE id_aluno = $7`;
+        if (alunoConsulta && alunoConsulta.status_aluno) {
+            const queryAtualizarAluno = `
+                UPDATE Aluno SET
+                    nome = $1,
+                    sobrenome = $2,
+                    data_nascimento = $3,
+                    endereco = $4,
+                    celular = $5,
+                    email = $6
+                WHERE id_aluno = $7
+            `;
 
-                // Executa a query de atualização com os valores do objeto aluno recebido
-                const respostaBD = await database.query(queryAtualizarAluno, [
-                    aluno.getNome().toUpperCase(),       // Nome em maiúsculas
-                    aluno.getSobrenome().toUpperCase(),  // Sobrenome em maiúsculas
-                    aluno.getDataNascimento(),           // Data de nascimento
-                    aluno.getEndereco().toUpperCase(),   // Endereço em maiúsculas
-                    aluno.getCelular(),                  // Celular
-                    aluno.getEmail().toLowerCase(),      // E-mail em minúsculas
-                    aluno.id_aluno                       // ID do aluno (para o WHERE)
-                ]);
+            const respostaBD = await database.query(queryAtualizarAluno, [
+                aluno.getNome().toUpperCase(),
+                aluno.getSobrenome().toUpperCase(),
+                aluno.getDataNascimento(),
+                aluno.getEndereco().toUpperCase(),
+                aluno.getCelular(),
+                aluno.getEmail().toLowerCase(),
+                aluno.getIdAluno() // ✅ getter aqui também
+            ]);
 
-                // Se rowCount for diferente de 0, a atualização funcionou — retorna true
-                if (respostaBD.rowCount != 0) {
-                    return true;
-                }
+            if (respostaBD.rowCount != 0) {
+                return true;
             }
-
-            // Se o aluno não existe, está inativo, ou o UPDATE não afetou nenhuma linha, retorna false
-            return false;
-        } catch (error) {
-            // Exibe o erro no console e retorna false em caso de exceção
-            console.log(`Erro na consulta: ${error}`);
-            return false;
         }
-    }
 
+        return false;
+    } catch (error) {
+        console.log(`Erro na consulta: ${error}`);
+        return false;
+    }
+}
 }
 
 // Exporta a classe Aluno para que possa ser importada e usada em outros arquivos do projeto
