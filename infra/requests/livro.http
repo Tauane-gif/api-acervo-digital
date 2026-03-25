@@ -1,37 +1,44 @@
 GET http://localhost:3333/api/livros
 
 ###
-GET http://localhost:3333/api/livros/11
+GET http://localhost:3333/api/livros/8
 
 ###
 POST http://localhost:3333/api/livros
 Content-Type: application/json
 
 {
-    "titulo": "O Senhor dos Anéis: O Retorno do Rei",
-    "autor": "J.R.R. Tolkien",
-    "editora": "HarperCollins",
-    "ano_publicacao": "1954",
-    "isbn": "978-0007525599",
-    "quant_total": 10,
-    "quant_disponivel": 10,
-    "valor_aquisicao": "150.00"
+    
+  "titulo": "O Código Secreto",
+  "autor": "Marcos Silva",
+  "editora": "Editora Saber",
+  "ano_publicacao": "2018",
+  "isbn": "978-1111111111",
+  "quant_total": 5,
+  "quant_disponivel": 3,
+  "valor_aquisicao": "45.90"
 }
 
+
 ###
-PUT http://localhost:3333/api/livros/6
+PUT http://localhost:3333/api/livros/20
 Content-Type: application/json
 
 {
-    "titulo": "O Senhor dos Anéis: As Duas Torres",
-    "autor": "J.R.R. Tolkien",
-    "editora": "HarperCollins",
-    "ano_publicacao": "1954",
-    "isbn": "978-0007525599",
-    "quant_total": 10,
-    "quant_disponivel": 10,
-    "valor_aquisicao": "150.00"
+   
+    
+  "titulo": "O Código Secreto",
+  "autor": "Marcos Silva",
+  "editora": "Editora Saber",
+  "ano_publicacao": "2018",
+  "isbn": "978-1111111111",
+  "quant_total": 5,
+  "quant_disponivel": 3,
+  "valor_aquisicao": "45.90"
 }
+
+
+
 
 ###
 DELETE http://localhost:3333/api/livros/7

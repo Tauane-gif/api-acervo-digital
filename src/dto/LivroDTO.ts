@@ -34,10 +34,6 @@ export default interface LivroDTO {
     // Este valor muda conforme os livros são emprestados e devolvidos (quant_total - emprestados)
     quant_disponivel: number,
 
-    // Quantidade de exemplares adquiridos na última compra — OBRIGATÓRIO
-    // Diferente de quant_total, registra especificamente o volume da aquisição mais recente
-    quant_aquisicao: number,
-
     // Valor pago para adquirir o livro — OBRIGATÓRIO
     // Usado para controle financeiro do acervo da biblioteca
     valor_aquisicao: number,

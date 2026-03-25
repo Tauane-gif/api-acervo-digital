@@ -58,8 +58,6 @@ export default interface EmprestimoDTO {
         quant_total?: number,
         // Quantidade de exemplares disponíveis para empréstimo
         quant_disponivel?: number,
-        // Quantidade de exemplares adquiridos
-        quant_aquisicao?: number,
         // Valor pago para adquirir o livro
         valor_aquisicao?: number,
         // Indica se o livro está disponível ou emprestado (ex: "Disponível", "Emprestado")
